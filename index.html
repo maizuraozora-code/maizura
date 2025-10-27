@@ -130,7 +130,7 @@
                                 <span class="text-green-600 text-sm">🏥</span>
                             </div>
                             <div class="flex-1">
-                                <p class="font-medium text-sm">UPT Puskesmas Bontomangape</p>
+                                <p class="font-medium text-sm">Puskesmas Desa Makmur</p>
                                 <p class="text-gray-500 text-xs">2.5 km • Buka 24 jam</p>
                             </div>
                         </div>
@@ -182,10 +182,10 @@
                             <button onclick="startChat('Dr. Ahmad Wijaya')" class="bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors text-sm">
                                 💬 Chat
                             </button>
-                            <button onclick="startCall('Dr. Ahmad Wijaya', '+62-811-2345-6789')" class="bg-blue-600 text-black py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
+                            <button onclick="startCall('Dr. Ahmad Wijaya', '+62-811-2345-6789')" class="bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
                                 📞 Call
                             </button>
-                            <button onclick="startVideoCall('Dr. Ahmad Wijaya')" class="bg-purple-600 text-black py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm">
+                            <button onclick="startVideoCall('Dr. Ahmad Wijaya')" class="bg-purple-600 text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm">
                                 📹 Video
                             </button>
                         </div>
@@ -216,10 +216,10 @@
                             <button class="bg-gray-300 text-gray-600 py-2 rounded-lg font-medium cursor-not-allowed text-sm">
                                 💬 Sibuk
                             </button>
-                            <button onclick="startCall('Dr. Sari Indah', '+62-812-9876-5432')" class="bg-blue-600 text-black py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
+                            <button onclick="startCall('Dr. Sari Indah', '+62-812-9876-5432')" class="bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
                                 📞 Call
                             </button>
-                            <button onclick="startVideoCall('Dr. Sari Indah')" class="bg-purple-600 text-black py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm">
+                            <button onclick="startVideoCall('Dr. Sari Indah')" class="bg-purple-600 text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm">
                                 📹 Video
                             </button>
                         </div>
@@ -365,7 +365,7 @@
                 <!-- Call Notes -->
                 <div class="bg-white bg-opacity-10 p-4 m-4 rounded-xl" id="callNotes" style="display: none;">
                     <h3 class="font-semibold mb-2">Catatan Konsultasi</h3>
-                    <textarea placeholder="Tulis catatan selama konsultasi..." class="w-full bg-black bg-opacity-20 border border-white border-opacity-30 rounded-lg p-3 text-white placeholder-blue-200 resize-none" rows="3"></textarea>
+                    <textarea placeholder="Tulis catatan selama konsultasi..." class="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg p-3 text-white placeholder-blue-200 resize-none" rows="3"></textarea>
                 </div>
             </div>
 
@@ -506,7 +506,7 @@
                         </div>
                         <div class="border-l-4 border-blue-400 pl-3 py-2">
                             <p class="font-medium text-sm">Pemeriksaan Rutin</p>
-                            <p class="text-gray-500 text-xs">10 Des 2024 • UPT Puskesmas Bontomangape</p>
+                            <p class="text-gray-500 text-xs">10 Des 2024 • Puskesmas Desa Makmur</p>
                             <p class="text-blue-600 text-xs">ℹ️ Normal</p>
                         </div>
                     </div>
@@ -624,7 +624,7 @@
                     <h3 class="font-semibold text-gray-800 mb-3">Kontak Darurat Lokal</h3>
                     <div class="space-y-2">
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
-                            <span class="text-sm">UPT Puskesmas Bontomangape</span>
+                            <span class="text-sm">Puskesmas Desa Makmur</span>
                             <button onclick="callEmergency('0271-123456')" class="text-green-600 font-medium text-sm">Hubungi</button>
                         </div>
                         <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
@@ -2016,46 +2016,74 @@
             showModal('Menghubungi Layanan Darurat', `Menghubungi ${number}. Tetap tenang dan ikuti instruksi operator.`);
         }
 
+        // User database simulation (in real app, this would be backend)
+        let userDatabase = JSON.parse(localStorage.getItem('sehatdesa_users') || '[]');
+        
+        // Initialize with demo account if database is empty
+        if (userDatabase.length === 0) {
+            userDatabase = [
+                {
+                    id: 1,
+                    name: 'Budi Santoso',
+                    email: 'budi@email.com',
+                    phone: '+62 812-3456-7890',
+                    password: '123456',
+                    birthDate: '1990-01-15',
+                    gender: 'male',
+                    address: 'Jl. Mawar No. 123, Desa Makmur',
+                    emergencyContact: '+62 813-9876-5432',
+                    initials: 'B',
+                    photoType: 'initials',
+                    createdAt: '2024-01-01'
+                }
+            ];
+            localStorage.setItem('sehatdesa_users', JSON.stringify(userDatabase));
+        }
+
         // Authentication functions
         function handleLogin(event) {
             event.preventDefault();
             
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.querySelector('input[type="checkbox"]').checked;
             
             if (!email || !password) {
                 showModal('Peringatan', 'Mohon lengkapi email dan password');
                 return;
             }
             
-            // Demo login - in real app, this would be API call
-            if (email === 'budi@email.com' && password === '123456') {
+            // Find user in database
+            const user = userDatabase.find(u => u.email === email && u.password === password);
+            
+            if (user) {
                 isLoggedIn = true;
-                currentUser = {
-                    name: 'Budi Santoso',
-                    email: 'budi@email.com',
-                    phone: '+62 812-3456-7890',
-                    initials: 'B',
-                    photoType: 'initials'
-                };
+                currentUser = { ...user }; // Create a copy
+                
+                // Save login state
+                saveLoginState(rememberMe);
                 
                 updateUserInterface();
-                showModal('Login Berhasil!', 'Selamat datang di SehatDesa');
+                showModal('Login Berhasil!', `Selamat datang kembali, ${user.name.split(' ')[0]}!`);
                 setTimeout(() => {
                     closeModal();
                     showHome();
                 }, 1500);
+                
+                // Clear form
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
             } else {
-                showModal('Login Gagal', 'Email atau password salah');
+                showModal('Login Gagal', 'Email atau password salah. Pastikan Anda sudah mendaftar terlebih dahulu.');
             }
         }
 
         function handleRegister(event) {
             event.preventDefault();
             
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const phone = document.getElementById('registerPhone').value.trim();
             const birthDate = document.getElementById('registerBirthDate').value;
             const gender = document.getElementById('registerGender').value;
             const password = document.getElementById('registerPassword').value;
@@ -2072,27 +2100,58 @@
                 return;
             }
             
+            if (password.length < 6) {
+                showModal('Peringatan', 'Password minimal 6 karakter');
+                return;
+            }
+            
             if (!agreeTerms) {
                 showModal('Peringatan', 'Mohon setujui syarat dan ketentuan');
                 return;
             }
             
-            // In real app, this would be API call
-            isLoggedIn = true;
-            currentUser = {
+            // Check if email already exists
+            if (userDatabase.find(u => u.email === email)) {
+                showModal('Email Sudah Terdaftar', 'Email ini sudah digunakan. Silakan gunakan email lain atau login dengan akun yang sudah ada.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
                 name: name,
                 email: email,
                 phone: phone,
+                password: password,
+                birthDate: birthDate,
+                gender: gender,
+                address: '',
+                emergencyContact: '',
                 initials: name.charAt(0).toUpperCase(),
-                photoType: 'initials'
+                photoType: 'initials',
+                createdAt: new Date().toISOString().split('T')[0]
             };
             
+            // Add to database
+            userDatabase.push(newUser);
+            localStorage.setItem('sehatdesa_users', JSON.stringify(userDatabase));
+            
+            // Auto login after registration
+            isLoggedIn = true;
+            currentUser = { ...newUser };
+            
+            // Save login state
+            saveLoginState(true);
+            
             updateUserInterface();
-            showModal('Registrasi Berhasil!', 'Akun Anda telah berhasil dibuat');
+            showModal('Registrasi Berhasil!', `Selamat datang di SehatDesa, ${name.split(' ')[0]}!`);
             setTimeout(() => {
                 closeModal();
                 showHome();
             }, 1500);
+            
+            // Clear form
+            clearRegisterForm();
         }
 
         function logout() {
@@ -2100,11 +2159,84 @@
             currentUser = null;
             cart = [];
             updateCartBadge();
+            
+            // Clear login state
+            localStorage.removeItem('sehatdesa_login');
+            localStorage.removeItem('sehatdesa_current_user');
+            
             showModal('Logout Berhasil', 'Anda telah keluar dari akun');
             setTimeout(() => {
                 closeModal();
                 showLogin();
             }, 1500);
+        }
+
+        function saveLoginState(rememberMe) {
+            const loginData = {
+                isLoggedIn: true,
+                userId: currentUser.id,
+                rememberMe: rememberMe,
+                loginTime: Date.now()
+            };
+            
+            if (rememberMe) {
+                // Save for 30 days
+                loginData.expiresAt = Date.now() + (30 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('sehatdesa_login', JSON.stringify(loginData));
+            } else {
+                // Save for current session only
+                sessionStorage.setItem('sehatdesa_login', JSON.stringify(loginData));
+            }
+            
+            // Save current user data
+            localStorage.setItem('sehatdesa_current_user', JSON.stringify(currentUser));
+        }
+
+        function checkLoginState() {
+            // Check localStorage first (remember me)
+            let loginData = JSON.parse(localStorage.getItem('sehatdesa_login') || 'null');
+            
+            // If not found, check sessionStorage (current session)
+            if (!loginData) {
+                loginData = JSON.parse(sessionStorage.getItem('sehatdesa_login') || 'null');
+            }
+            
+            if (loginData && loginData.isLoggedIn) {
+                // Check if login has expired (for remember me)
+                if (loginData.expiresAt && Date.now() > loginData.expiresAt) {
+                    // Login expired, clear data
+                    localStorage.removeItem('sehatdesa_login');
+                    localStorage.removeItem('sehatdesa_current_user');
+                    return false;
+                }
+                
+                // Get user data
+                const userData = JSON.parse(localStorage.getItem('sehatdesa_current_user') || 'null');
+                
+                if (userData) {
+                    // Verify user still exists in database
+                    const user = userDatabase.find(u => u.id === userData.id);
+                    if (user) {
+                        isLoggedIn = true;
+                        currentUser = { ...user }; // Use latest user data from database
+                        updateUserInterface();
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        function clearRegisterForm() {
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPhone').value = '';
+            document.getElementById('registerBirthDate').value = '';
+            document.getElementById('registerGender').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerConfirmPassword').value = '';
+            document.getElementById('agreeTerms').checked = false;
         }
 
         function updateUserInterface() {
@@ -2300,7 +2432,14 @@
                 return;
             }
             
-            // Update user data
+            // Check if email is already used by another user
+            const existingUser = userDatabase.find(u => u.email === email && u.id !== currentUser.id);
+            if (existingUser) {
+                showModal('Email Sudah Digunakan', 'Email ini sudah digunakan oleh pengguna lain');
+                return;
+            }
+            
+            // Update user data in current session
             currentUser.name = name;
             currentUser.email = email;
             currentUser.phone = phone;
@@ -2309,6 +2448,14 @@
             currentUser.address = address;
             currentUser.emergencyContact = emergencyContact;
             currentUser.initials = name.charAt(0).toUpperCase();
+            
+            // Update user data in database
+            const userIndex = userDatabase.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                userDatabase[userIndex] = { ...currentUser };
+                localStorage.setItem('sehatdesa_users', JSON.stringify(userDatabase));
+                localStorage.setItem('sehatdesa_current_user', JSON.stringify(currentUser));
+            }
             
             updateUserInterface();
             showModal('Profil Diperbarui', 'Informasi profil berhasil disimpan');
@@ -2342,10 +2489,21 @@
                 return;
             }
             
-            // In real app, verify current password with backend
-            if (currentPassword !== '123456') {
+            // Verify current password
+            if (currentPassword !== currentUser.password) {
                 showModal('Password Salah', 'Password saat ini tidak benar');
                 return;
+            }
+            
+            // Update password in current session
+            currentUser.password = newPassword;
+            
+            // Update password in database
+            const userIndex = userDatabase.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                userDatabase[userIndex].password = newPassword;
+                localStorage.setItem('sehatdesa_users', JSON.stringify(userDatabase));
+                localStorage.setItem('sehatdesa_current_user', JSON.stringify(currentUser));
             }
             
             showModal('Password Berhasil Diubah', 'Password Anda telah berhasil diperbarui');
@@ -2473,8 +2631,8 @@
 
         // Search functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in (in real app, check localStorage/sessionStorage)
-            if (isLoggedIn) {
+            // Check if user is logged in from previous session
+            if (checkLoginState()) {
                 showHome();
             } else {
                 showLogin();
@@ -2487,5 +2645,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99496685c41b45e2',t:'MTc2MTQ3NTkwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994e4a4dc7f003d4',t:'MTc2MTUyNzE4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
